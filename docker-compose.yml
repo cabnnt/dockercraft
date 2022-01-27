@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  mc-proxy:
+    image: itzg/bungeecord:java17
+    ports:
+      - "19132:19132/udp" 
+      - "25565:25577"
+    environment:
+      TYPE: BUNGEECORD
+      PLUGINS: https://ci.opencollab.dev//job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/bungeecord/target/Geyser-BungeeCord.jar,https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/bungee/target/floodgate-bungee.jar
+    volumes:
+      - ./proxy/server:/server
+    networks:
+      - mc-network
+
+  mc-survival:
+    image: itzg/minecraft-server:java17
+    expose:
+      - "25565"
+      - "28016"
+    environment:
+      EULA: "TRUE"
+      ONLINE_MODE: "FALSE"
+
+      PATCH_DEFINITIONS: "/common/patches.json"
+      MODS: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
+
+      VERSION: "1.18.1"
+
+      SERVER_NAME: "mc-survival"
+
+      TYPE: "PAPER"
+      MODE: "survival"
+    restart: unless-stopped
+    volumes:
+      - ./worlds/mc-survival/data:/data
+      - ./plugins:/plugins
+      - ./common:/common
+    networks:
+      - mc-network
+    depends_on:
+      - mc-proxy
+
+networks:
+  mc-network:
+    driver: bridge
