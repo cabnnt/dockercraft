@@ -7,7 +7,7 @@ services:
       - "19132:19132/udp" 
       - "25565:25577"
     environment:
-      TYPE: BUNGEECORD
+      TYPE: WATERFALL
       PLUGINS: https://ci.opencollab.dev//job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/bungeecord/target/Geyser-BungeeCord.jar,https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/bungee/target/floodgate-bungee.jar
     volumes:
       - ./proxy/server:/server
